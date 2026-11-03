@@ -55,7 +55,7 @@ def summarize(rows: List[Dict[str, str]]) -> Tuple[Dict[str, float], float]:
     for row in rows:
         region = row["region"]
         totals[region] = totals.get(region, 0) + float(row["amount"])
-    average = sum(totals.values()) / len(totals)
+    average = sum(totals.values()) / len(totals) if totals else 0.0
     return totals, average
 
 
