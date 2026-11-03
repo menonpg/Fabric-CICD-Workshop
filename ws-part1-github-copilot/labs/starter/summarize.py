@@ -1,6 +1,6 @@
 import argparse
 import csv
-from typing import Dict, Optional, Tuple
+from typing import Dict, List, Optional, Tuple
 
 
 def load_rows(path):
@@ -8,8 +8,9 @@ def load_rows(path):
         return list(csv.DictReader(source))
 
 
-def summarize(rows):
-    totals = {}
+def summarize(rows: List[Dict[str, str]]) -> Tuple[Dict[str, float], float]:
+    """Total the amounts by region and return (totals, average of the regional totals)."""
+    totals: Dict[str, float] = {}
     for row in rows:
         region = row["region"]
         totals[region] = totals.get(region, 0) + float(row["amount"])
