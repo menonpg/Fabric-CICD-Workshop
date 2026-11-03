@@ -126,3 +126,14 @@ def test_default_report_unchanged():
     result = run_report(DATA / "sales.csv")
     assert result.returncode == 0
     assert result.stdout.splitlines() == ["East: 150.00", "North: 75.00", "West: 250.00", "Average per region: 158.33"]
+
+
+def test_summarize_header_only_returns_empty_totals():
+    assert summarize(load_rows(DATA / "empty.csv")) == ({}, 0.0)
+
+
+def test_header_only_report_prints_zero_average():
+    result = run_report(DATA / "empty.csv")
+    assert result.returncode == 0
+    assert result.stdout == "Average per region: 0.00\n"
+    assert result.stderr == ""
