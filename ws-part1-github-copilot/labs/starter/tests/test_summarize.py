@@ -1,3 +1,5 @@
+import subprocess
+import sys
 from pathlib import Path
 
 import pytest
@@ -5,7 +7,13 @@ import pytest
 from summarize import load_rows, summarize, top_region
 
 
-DATA = Path(__file__).resolve().parents[1] / "data"
+STARTER = Path(__file__).resolve().parents[1]
+DATA = STARTER / "data"
+
+
+def run_report(*args):
+    return subprocess.run([sys.executable, str(STARTER / "summarize.py"), *map(str, args)],
+                          capture_output=True, text=True)
 
 
 def test_load_sales():
@@ -36,3 +44,23 @@ def test_average_is_mean_of_regional_totals():
     # 475 total across 3 regions; averaging per row (4 rows) would give 118.75
     _, average = summarize(load_rows(DATA / "sales.csv"))
     assert average == pytest.approx(475 / 3)
+
+
+def test_region_filter_east():
+    result = run_report(DATA / "sales.csv", "--region", "East")
+    assert result.returncode == 0
+    assert result.stdout == "East: 150.00\nAverage per region: 150.00\n"
+
+
+def test_region_filter_unknown_fails_cleanly():
+    result = run_report(DATA / "sales.csv", "--region", "Unknown")
+    assert result.returncode != 0
+    assert result.stdout == ""
+    assert "unknown region" in result.stderr
+    assert "Traceback" not in result.stderr
+
+
+def test_default_report_unchanged():
+    result = run_report(DATA / "sales.csv")
+    assert result.returncode == 0
+    assert result.stdout.splitlines() == ["East: 150.00", "North: 75.00", "West: 250.00", "Average per region: 158.33"]
