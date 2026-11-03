@@ -47,15 +47,29 @@ def test_supplied_invalid_files_fail_cleanly(path, message, line_number):
         assert f"line {line_number}" in result.stderr
 
 
+def test_empty_file_fails_cleanly(tmp_path):
+    path = tmp_path / "empty.csv"
+    path.write_bytes(b"")
+
+    result = run_report(path)
+
+    assert result.returncode != 0
+    assert result.stdout == ""
+    assert "missing required column(s): region, amount" in result.stderr
+    assert "Traceback" not in result.stderr
+
+
 @pytest.mark.parametrize(
     ("content", "message"),
     [
         ("region,amount\n   ,10\n", "line 2: region must not be blank"),
         ("region,amount\nEast,nan\n", "line 2: amount must be finite"),
         ("region,amount\nEast,inf\n", "line 2: amount must be finite"),
+        ("region,amount\nEast,1e999\n", "line 2: amount must be finite"),
         ("region,amount\nEast,-1\n", "line 2: amount must not be negative"),
         ("region,amount\nEast\n", "line 2: expected 2 columns, found 1"),
         ("region,amount\nEast,100,extra\n", "line 2: expected 2 columns, found 3"),
+        ('region,amount\nEast,"100\n', "line 2: malformed CSV"),
     ],
 )
 def test_invalid_rows_fail_cleanly(tmp_path, content, message):
