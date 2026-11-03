@@ -43,7 +43,7 @@ a{color:var(--accent)}
 
 <div class="card">
   <h2>The one-paragraph version</h2>
-  <p class="big">The workshop teaches two things. <b>Part 1</b>: how to work with GitHub Copilot (the AI assistant in VS Code) safely, on a tiny Python program that adds up sales by region. <b>Part 2</b>: how to release Microsoft Fabric work properly, using Git, reviewed changes and Dev → Test → Production stages. Today we're in <b>Part 1</b>, doing short labs called GH0 to GH9. Each lab asks Copilot to make one small change to the sales program, then checks it with tests.</p>
+  <p class="big">The workshop teaches two things. <b>Part 1</b>: how to work with GitHub Copilot (the AI assistant in VS Code) safely, on a tiny Python program that adds up sales by region. <b>Part 2</b>: how to release Microsoft Fabric work properly, using Git, reviewed changes and Dev → Test → Production stages. Part 1 is done (except one 10-minute drill); <b>Part 2</b> is next, doing short labs called GH0 to GH9. Each lab asks Copilot to make one small change to the sales program, then checks it with tests.</p>
 </div>
 
 <div class="card">
@@ -68,9 +68,9 @@ a{color:var(--accent)}
     <tr><td>GH4</td><td>Chat modes on one bug: ask, plan, then fix (the "average per region" is wrong on purpose)</td><td>Average corrected and tested</td><td class="st done">✓ done (158.33)</td></tr>
     <tr><td>GH5</td><td>Teach Copilot our rules: instruction files, a read-only reviewer agent, reusable prompts, a skill</td><td>Copilot follows the project's conventions</td><td class="st done">✓ done (files in <code>.github/</code>, <code>AGENTS.md</code>)</td></tr>
     <tr><td>GH6</td><td>Optional: same kind of change from the terminal with Copilot CLI</td><td>A region filter works</td><td class="st done">✓ done (<code>--region East</code>)</td></tr>
-    <tr><td>GH7</td><td>GitHub side: turn an issue into a pull request, with Copilot reviewing</td><td>A reviewed PR</td><td class="st now">▶ in progress: Copilot is writing <a href="https://github.com/menonpg/Fabric-CICD-Workshop/pull/2">PR #2</a> from <a href="https://github.com/menonpg/Fabric-CICD-Workshop/issues/1">issue #1</a></td></tr>
-    <tr><td>GH8</td><td>Safety drill: Copilot proposes overwriting a file, and you say <b>no</b></td><td>The file is untouched</td><td class="st next">do it yourself in VS Code (10 min)</td></tr>
-    <tr><td>GH9</td><td>Capstone: plan → change → tests → pull request, on your own</td><td>Empty-file handling shipped via a PR</td><td class="st next">later</td></tr>
+    <tr><td>GH7</td><td>GitHub side: turn an issue into a pull request, with Copilot reviewing</td><td>A reviewed PR</td><td class="st done">✓ done: Copilot wrote <a href="https://github.com/menonpg/Fabric-CICD-Workshop/pull/2">PR #2</a> from <a href="https://github.com/menonpg/Fabric-CICD-Workshop/issues/1">issue #1</a>; reviewed, tests added on request, merged</td></tr>
+    <tr><td>GH8</td><td>Safety drill: Copilot proposes overwriting a file, and you say <b>no</b></td><td>The file is untouched</td><td class="st now">▶ to do yourself in VS Code (10 min, steps below)</td></tr>
+    <tr><td>GH9</td><td>Capstone: plan → change → tests → pull request, on your own</td><td>Empty-file handling shipped via a PR</td><td class="st done">✓ done: <a href="https://github.com/menonpg/Fabric-CICD-Workshop/pull/3">PR #3</a> merged; 23 tests pass</td></tr>
   </table></div>
 </div>
 
@@ -82,6 +82,28 @@ a{color:var(--accent)}
     <li><b>GH6:</b> we added <code>--region East</code> to show one region. An unknown region gives a clear error, not a crash.</li>
     <li><b>GH7:</b> we added a GitHub <b>Actions</b> workflow that runs the tests on every change (it passed on GitHub's servers). Then we wrote a GitHub <b>issue</b> describing the next change (input validation) and <b>assigned it to Copilot</b>. Copilot is now writing the code itself as a pull request; our job is to review it before merging.</li>
   </ul>
+</div>
+
+<div class="card">
+  <h2>How GH7 and GH9 finished</h2>
+  <ul>
+    <li><b>GH7:</b> Copilot (working on GitHub, not on my laptop) wrote the input checks. Bad files now give a clear message such as <i>"line 3: amount must be a number"</i> instead of crashing. I reviewed it, all the cases in the lab's table worked, and I asked Copilot in a PR comment to add three missing tests, which it did. GitHub's test run passed, then I merged it.</li>
+    <li><b>GH9 (capstone):</b> a sales file with only a header used to crash (divide by zero). Now it prints <code>Average per region: 0.00</code>. Done the "proper" way: a branch, a pull request (PR #3), an automatic test run on GitHub, then merge.</li>
+    <li><b>Final state:</b> 23 tests pass; the normal report is unchanged (average 158.33).</li>
+  </ul>
+</div>
+
+<div class="card">
+  <h2>GH8, the only one left (do it yourself, 10 min)</h2>
+  <p>The point: practice telling an AI agent <b>no</b>, and checking it listened.</p>
+  <ol>
+    <li>In VS Code, create <code>ws-part1-github-copilot/labs/starter/output/approval-demo.txt</code> containing <code>KEEP THIS PRACTICE TEXT</code>.</li>
+    <li>Open a new Copilot <b>Agent</b> chat. Tell it: <i>"Use read-only checks first. Before overwriting anything, show the exact path and proposed change, then wait for my approval."</i></li>
+    <li>Ask: <i>"Propose replacing the content of that file with 'Replacement report'. Show the path and content, then stop and wait."</i></li>
+    <li>When it asks, answer: <b>"No. Keep the existing file unchanged."</b> Deny any tool pop-up too.</li>
+    <li>Open the file yourself. It should still say <code>KEEP THIS PRACTICE TEXT</code>.</li>
+  </ol>
+  <p>Lesson: instructions <i>guide</i> the agent; only settings and permissions <i>enforce</i>. Always check the result yourself.</p>
 </div>
 
 <div class="card">
