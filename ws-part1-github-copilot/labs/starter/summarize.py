@@ -1,11 +1,52 @@
 import argparse
 import csv
+import math
 from typing import Dict, List, Optional, Tuple
 
 
 def load_rows(path):
+    rows = []
     with open(path, newline="", encoding="utf-8-sig") as source:
-        return list(csv.DictReader(source))
+        reader = csv.reader(source, strict=True)
+        try:
+            headers = next(reader, None)
+        except csv.Error as error:
+            raise ValueError(f"line {reader.line_num}: malformed CSV: {error}") from error
+        if headers is None:
+            headers = []
+        missing = [column for column in ("region", "amount") if column not in headers]
+        if missing:
+            raise ValueError(f"CSV missing required column(s): {', '.join(missing)}")
+
+        while True:
+            line_number = reader.line_num + 1
+            try:
+                values = next(reader)
+            except StopIteration:
+                break
+            except csv.Error as error:
+                raise ValueError(f"line {reader.line_num}: malformed CSV: {error}") from error
+            if len(values) != len(headers):
+                raise ValueError(
+                    f"line {line_number}: expected {len(headers)} columns, found {len(values)}"
+                )
+
+            row = dict(zip(headers, values))
+            row["region"] = row["region"].strip()
+            if not row["region"]:
+                raise ValueError(f"line {line_number}: region must not be blank")
+            try:
+                amount = float(row["amount"])
+            except ValueError as error:
+                raise ValueError(
+                    f"line {line_number}: amount must be a number, got {row['amount']!r}"
+                ) from error
+            if not math.isfinite(amount):
+                raise ValueError(f"line {line_number}: amount must be finite")
+            if amount < 0:
+                raise ValueError(f"line {line_number}: amount must not be negative")
+            rows.append(row)
+    return rows
 
 
 def summarize(rows: List[Dict[str, str]]) -> Tuple[Dict[str, float], float]:

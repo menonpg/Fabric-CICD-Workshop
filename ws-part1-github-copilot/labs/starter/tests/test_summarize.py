@@ -22,6 +22,68 @@ def test_load_sales():
     assert rows[0] == {"region": "East", "amount": "100"}
 
 
+def test_load_rows_trims_region_names(tmp_path):
+    path = tmp_path / "whitespace.csv"
+    path.write_text("region,amount\n  East  ,100\n", encoding="utf-8")
+
+    assert load_rows(path) == [{"region": "East", "amount": "100"}]
+
+
+@pytest.mark.parametrize(
+    ("path", "message", "line_number"),
+    [
+        (DATA / "invalid-amount.csv", "amount must be a number", 3),
+        (DATA / "missing-column.csv", "missing required column", None),
+    ],
+)
+def test_supplied_invalid_files_fail_cleanly(path, message, line_number):
+    result = run_report(path)
+
+    assert result.returncode != 0
+    assert result.stdout == ""
+    assert message in result.stderr
+    assert "Traceback" not in result.stderr
+    if line_number is not None:
+        assert f"line {line_number}" in result.stderr
+
+
+def test_empty_file_fails_cleanly(tmp_path):
+    path = tmp_path / "empty.csv"
+    path.write_bytes(b"")
+
+    result = run_report(path)
+
+    assert result.returncode != 0
+    assert result.stdout == ""
+    assert "missing required column(s): region, amount" in result.stderr
+    assert "Traceback" not in result.stderr
+
+
+@pytest.mark.parametrize(
+    ("content", "message"),
+    [
+        ("region,amount\n   ,10\n", "line 2: region must not be blank"),
+        ("region,amount\nEast,nan\n", "line 2: amount must be finite"),
+        ("region,amount\nEast,inf\n", "line 2: amount must be finite"),
+        ("region,amount\nEast,1e999\n", "line 2: amount must be finite"),
+        ("region,amount\nEast,-1\n", "line 2: amount must not be negative"),
+        ("region,amount\nEast\n", "line 2: expected 2 columns, found 1"),
+        ("region,amount\nEast,100,extra\n", "line 2: expected 2 columns, found 3"),
+        ('region,amount\nEast,"100\n', "line 2: malformed CSV"),
+    ],
+)
+def test_invalid_rows_fail_cleanly(tmp_path, content, message):
+    path = tmp_path / "invalid.csv"
+    path.write_text(content, encoding="utf-8")
+
+    result = run_report(path)
+
+    assert result.returncode != 0
+    assert result.stdout == ""
+    assert message in result.stderr
+    assert "Traceback" not in result.stderr
+
+
 def test_totals_by_region():
     totals, _ = summarize(load_rows(DATA / "sales.csv"))
     assert totals == {"East": 150.0, "West": 250.0, "North": 75.0}
