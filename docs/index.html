@@ -65,13 +65,23 @@ a{color:var(--accent)}
     <tr><td>GH1</td><td>Access check: VS Code signed in to GitHub, Chat answers, command-line tools work</td><td>Copilot Chat replies; <code>gh auth status</code> shows my account</td><td class="st done">✓ done</td></tr>
     <tr><td>GH2</td><td>Set up the sales program: a private Python environment and the test tool (pytest)</td><td>The program runs; 2 starter tests pass</td><td class="st done">✓ done</td></tr>
     <tr><td>GH3</td><td>Editor features: Copilot writes a small helper, adds type hints, renames a function, writes tests</td><td>5 tests pass; report unchanged</td><td class="st done">✓ done, pushed to my fork</td></tr>
-    <tr><td>GH4</td><td>Chat modes on one bug: ask, plan, then fix (the "average per region" is wrong on purpose)</td><td>Average corrected and tested</td><td class="st now">▶ next</td></tr>
-    <tr><td>GH5</td><td>Teach Copilot our rules: instruction files, a read-only reviewer agent, reusable prompts, a skill</td><td>Copilot follows the project's conventions</td><td class="st next">later</td></tr>
-    <tr><td>GH6</td><td>Optional: same kind of change from the terminal with Copilot CLI</td><td>A region filter works</td><td class="st next">optional</td></tr>
-    <tr><td>GH7</td><td>GitHub side: turn an issue into a pull request, with Copilot reviewing</td><td>A reviewed PR</td><td class="st next">later</td></tr>
-    <tr><td>GH8</td><td>Safety drill: Copilot proposes overwriting a file, and you say <b>no</b></td><td>The file is untouched</td><td class="st next">later</td></tr>
+    <tr><td>GH4</td><td>Chat modes on one bug: ask, plan, then fix (the "average per region" is wrong on purpose)</td><td>Average corrected and tested</td><td class="st done">✓ done (158.33)</td></tr>
+    <tr><td>GH5</td><td>Teach Copilot our rules: instruction files, a read-only reviewer agent, reusable prompts, a skill</td><td>Copilot follows the project's conventions</td><td class="st done">✓ done (files in <code>.github/</code>, <code>AGENTS.md</code>)</td></tr>
+    <tr><td>GH6</td><td>Optional: same kind of change from the terminal with Copilot CLI</td><td>A region filter works</td><td class="st done">✓ done (<code>--region East</code>)</td></tr>
+    <tr><td>GH7</td><td>GitHub side: turn an issue into a pull request, with Copilot reviewing</td><td>A reviewed PR</td><td class="st now">▶ in progress: Copilot is writing <a href="https://github.com/menonpg/Fabric-CICD-Workshop/pull/2">PR #2</a> from <a href="https://github.com/menonpg/Fabric-CICD-Workshop/issues/1">issue #1</a></td></tr>
+    <tr><td>GH8</td><td>Safety drill: Copilot proposes overwriting a file, and you say <b>no</b></td><td>The file is untouched</td><td class="st next">do it yourself in VS Code (10 min)</td></tr>
     <tr><td>GH9</td><td>Capstone: plan → change → tests → pull request, on your own</td><td>Empty-file handling shipped via a PR</td><td class="st next">later</td></tr>
   </table></div>
+</div>
+
+<div class="card">
+  <h2>What happened in GH4–GH7, in plain words</h2>
+  <ul>
+    <li><b>GH4:</b> the "average per region" was wrong (it divided by 4 sales instead of 3 regions). First we wrote a test that <i>fails</i> on the bug, then fixed one line. Now it says <b>158.33</b> and 6 tests pass.</li>
+    <li><b>GH5:</b> we gave Copilot the project's rules as files: <code>.github/copilot-instructions.md</code> (house rules), <code>AGENTS.md</code>, a <b>read-only reviewer</b> agent that can only read and search, a reusable "review my changes" prompt, and a small "skill" that explains the report.</li>
+    <li><b>GH6:</b> we added <code>--region East</code> to show one region. An unknown region gives a clear error, not a crash.</li>
+    <li><b>GH7:</b> we added a GitHub <b>Actions</b> workflow that runs the tests on every change (it passed on GitHub's servers). Then we wrote a GitHub <b>issue</b> describing the next change (input validation) and <b>assigned it to Copilot</b>. Copilot is now writing the code itself as a pull request; our job is to review it before merging.</li>
+  </ul>
 </div>
 
 <div class="card">
