@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Copilot Workshop Guide</title>
+<meta name="description" content="A plain-language guide to the GitHub Copilot + Fabric CI/CD workshop: what's going on, where we are, what each lab does.">
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--ink:#1d2433;--muted:#5b6475;--line:#dde1e7;--accent:#0b5cad;--soft:#eef4fb;--done:#1d7a4a;--now:#b26a00;--next:#6b7280}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12151b;--card:#1b2029;--ink:#e6e9ef;--muted:#a3abba;--line:#2c3340;--accent:#8fb3ff;--soft:#1f2735;--done:#5cc28e;--now:#e6a04b;--next:#9aa1ad}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
+header{background:#0b2a4a;color:#fff;padding:28px 16px}
+header h1{margin:0 0 6px;font-size:26px}header p{margin:0;opacity:.85}
+main{max-width:920px;margin:0 auto;padding:8px 16px 40px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin:16px 0}
+h2{font-size:20px;margin:0 0 10px}
+.big{font-size:18px}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:8px}
+@media (max-width:700px){.steps{grid-template-columns:1fr}}
+.box{border:2px solid var(--line);border-radius:10px;padding:12px;background:var(--soft)}
+.box b{display:block;font-size:15px}.box small{color:var(--muted)}
+.arrow{text-align:center;color:var(--muted);font-size:13px;margin:6px 0}
+table{width:100%;border-collapse:collapse;font-size:14.5px}
+th,td{border-bottom:1px solid var(--line);padding:8px 6px;text-align:left;vertical-align:top}
+th{color:var(--muted);font-size:12.5px;text-transform:uppercase;letter-spacing:.04em}
+.st{font-weight:700;white-space:nowrap}.done{color:var(--done)}.now{color:var(--now)}.next{color:var(--next)}
+code,pre{font:13.5px ui-monospace,SFMono-Regular,Menlo,monospace}
+code{background:var(--soft);padding:1px 5px;border-radius:4px}
+pre{background:var(--soft);border:1px solid var(--line);border-radius:8px;padding:12px;overflow-x:auto;margin:8px 0}
+dl{margin:0}dt{font-weight:700;margin-top:10px}dd{margin:2px 0 0 0;color:var(--muted)}
+.scroll{overflow-x:auto}
+a{color:var(--accent)}
+.tag{display:inline-block;font-size:12px;padding:1px 8px;border-radius:10px;border:1px solid var(--line);color:var(--muted)}
+</style>
+</head>
+<body>
+<header>
+  <h1>What's going on in this workshop</h1>
+  <p>A plain-language guide to the GitHub Copilot + Microsoft Fabric CI/CD workshop · my notes as I follow along</p>
+</header>
+<main>
+
+<div class="card">
+  <h2>The one-paragraph version</h2>
+  <p class="big">The workshop teaches two things. <b>Part 1</b>: how to work with GitHub Copilot (the AI assistant in VS Code) safely, on a tiny Python program that adds up sales by region. <b>Part 2</b>: how to release Microsoft Fabric work properly, using Git, reviewed changes and Dev → Test → Production stages. Today we're in <b>Part 1</b>, doing short labs called GH0 to GH9. Each lab asks Copilot to make one small change to the sales program, then checks it with tests.</p>
+</div>
+
+<div class="card">
+  <h2>The three copies of the code (this is what confuses everyone)</h2>
+  <div class="steps">
+    <div class="box"><b>1. The original</b><small>github.com/redhatpeter/Fabric-CICD-Workshop</small><br>The presenter's version. We never change it.</div>
+    <div class="box"><b>2. My fork</b><small>github.com/menonpg/Fabric-CICD-Workshop</small><br>My own copy on GitHub. My finished lab work goes here.</div>
+    <div class="box"><b>3. My laptop</b><small>a folder on my Mac, open in VS Code</small><br>Where the work actually happens. I "push" it up to my fork.</div>
+  </div>
+  <p class="arrow">original → (fork) → my fork on GitHub ⇄ (clone / push) ⇄ my laptop</p>
+  <p>The program we edit lives in <code>ws-part1-github-copilot/labs/starter/</code>. The lab instructions are the <code>.md</code> files in <code>ws-part1-github-copilot/labs/</code>.</p>
+</div>
+
+<div class="card">
+  <h2>Where we are</h2>
+  <div class="scroll"><table>
+    <tr><th>Lab</th><th>What it's about</th><th>What "done" looks like</th><th>Status</th></tr>
+    <tr><td>GH0</td><td>Tour of Copilot's ways to help: inline suggestions, chat, the agents window</td><td>You can say which one to use when</td><td class="st done">✓ watched</td></tr>
+    <tr><td>GH1</td><td>Access check: VS Code signed in to GitHub, Chat answers, command-line tools work</td><td>Copilot Chat replies; <code>gh auth status</code> shows my account</td><td class="st done">✓ done</td></tr>
+    <tr><td>GH2</td><td>Set up the sales program: a private Python environment and the test tool (pytest)</td><td>The program runs; 2 starter tests pass</td><td class="st done">✓ done</td></tr>
+    <tr><td>GH3</td><td>Editor features: Copilot writes a small helper, adds type hints, renames a function, writes tests</td><td>5 tests pass; report unchanged</td><td class="st done">✓ done, pushed to my fork</td></tr>
+    <tr><td>GH4</td><td>Chat modes on one bug: ask, plan, then fix (the "average per region" is wrong on purpose)</td><td>Average corrected and tested</td><td class="st now">▶ next</td></tr>
+    <tr><td>GH5</td><td>Teach Copilot our rules: instruction files, a read-only reviewer agent, reusable prompts, a skill</td><td>Copilot follows the project's conventions</td><td class="st next">later</td></tr>
+    <tr><td>GH6</td><td>Optional: same kind of change from the terminal with Copilot CLI</td><td>A region filter works</td><td class="st next">optional</td></tr>
+    <tr><td>GH7</td><td>GitHub side: turn an issue into a pull request, with Copilot reviewing</td><td>A reviewed PR</td><td class="st next">later</td></tr>
+    <tr><td>GH8</td><td>Safety drill: Copilot proposes overwriting a file, and you say <b>no</b></td><td>The file is untouched</td><td class="st next">later</td></tr>
+    <tr><td>GH9</td><td>Capstone: plan → change → tests → pull request, on your own</td><td>Empty-file handling shipped via a PR</td><td class="st next">later</td></tr>
+  </table></div>
+</div>
+
+<div class="card">
+  <h2>What actually happened in GH3, in plain words</h2>
+  <ul>
+    <li>The program reads a small file of sales (<code>East 100, West 250, East 50, North 75</code>) and totals it by region: <b>East 150, West 250, North 75</b>.</li>
+    <li>We added a helper, <code>top_region</code>, that answers "which region sold the most?". West, with 250. If two regions tie, it picks the alphabetically first. If there's no data, it returns nothing.</li>
+    <li>We renamed <code>load</code> to <code>load_rows</code> everywhere it was used, which is a common editor task.</li>
+    <li>We added 3 tests (normal, tie, empty). Now <b>5 tests pass</b>.</li>
+    <li>We saved it as a <b>commit</b> and <b>pushed</b> it to my fork on GitHub.</li>
+  </ul>
+  <p><span class="tag">heads-up</span> The program's "Average per region" prints 118.75. That's the total divided by 4 rows, not by 3 regions. It's a deliberate bug that GH4 fixes.</p>
+</div>
+
+<div class="card">
+  <h2>How to follow along</h2>
+  <ol>
+    <li>In VS Code: <b>File → Open Folder</b> → the <code>Fabric-CICD-Workshop</code> folder on my Mac.</li>
+    <li>Open the lab being discussed, e.g. <code>ws-part1-github-copilot/labs/04-modes.md</code> (right-click → Open Preview).</li>
+    <li>The code is in <code>labs/starter/summarize.py</code>, and its tests are in <code>labs/starter/tests/</code>.</li>
+    <li>To run the checks, open VS Code's terminal (<b>Terminal → New Terminal</b>) and paste:
+<pre>cd ws-part1-github-copilot/labs/starter
+.venv/bin/python -m pytest -q
+.venv/bin/python summarize.py data/sales.csv</pre></li>
+    <li>When a lab is finished, save the work to my fork:
+<pre>git add -A ws-part1-github-copilot/labs/starter
+git commit -m "GH4: ..."
+git push</pre></li>
+  </ol>
+</div>
+
+<div class="card">
+  <h2>Words that keep coming up</h2>
+  <dl>
+    <dt>Fork</dt><dd>My own copy of someone else's GitHub project. I can change it freely.</dd>
+    <dt>Clone</dt><dd>Downloading a GitHub project to my laptop.</dd>
+    <dt>Commit</dt><dd>A saved snapshot of changes, with a short message.</dd>
+    <dt>Push</dt><dd>Uploading my commits from the laptop to GitHub.</dd>
+    <dt>Branch</dt><dd>A separate line of work, so changes can be reviewed before joining the main version.</dd>
+    <dt>Pull request (PR)</dt><dd>A request to merge a branch into main, where someone (or Copilot) reviews it first.</dd>
+    <dt>Tests / pytest</dt><dd>Small checks that prove the code does what it should. "5 passed" means all good.</dd>
+    <dt>Virtual environment (.venv)</dt><dd>A private Python setup for this project, so its tools don't clash with anything else.</dd>
+    <dt>Inline suggestion / Chat / Agents window</dt><dd>Copilot's three ways to help: gray "ghost text" as you type, a chat panel for questions, and an agent that plans and makes multi-step changes.</dd>
+    <dt>Instructions, prompts, skills, agents</dt><dd>Files in the repo that tell Copilot our rules and give it reusable recipes (GH5).</dd>
+    <dt>MCP server</dt><dd>A connector that lets Copilot use outside tools or systems (with permission).</dd>
+  </dl>
+</div>
+
+<div class="card">
+  <h2>Part 2 in one picture (for later)</h2>
+  <pre>my branch → pull request + automatic checks → main → Dev workspace
+                                                     → Test → (approval) → Production</pre>
+  <p>Same idea as Part 1, but the thing being released is a Microsoft Fabric notebook, and it moves through Dev, Test and Production workspaces with an approval step.</p>
+</div>
+
+<p class="tag">Workshop materials: <a href="https://github.com/redhatpeter/Fabric-CICD-Workshop">redhatpeter/Fabric-CICD-Workshop</a> · this guide lives in <code>docs/</code> of my fork</p>
+</main>
+</body>
+</html>
