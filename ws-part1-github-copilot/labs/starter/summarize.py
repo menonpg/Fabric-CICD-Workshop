@@ -13,7 +13,7 @@ def summarize(rows):
     for row in rows:
         region = row["region"]
         totals[region] = totals.get(region, 0) + float(row["amount"])
-    average = sum(totals.values()) / len(rows)
+    average = sum(totals.values()) / len(totals)
     return totals, average
 
 

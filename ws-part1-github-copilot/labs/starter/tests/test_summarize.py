@@ -1,5 +1,7 @@
 from pathlib import Path
 
+import pytest
+
 from summarize import load_rows, summarize, top_region
 
 
@@ -28,3 +30,9 @@ def test_top_region_tie_breaks_alphabetically():
 
 def test_top_region_empty():
     assert top_region({}) is None
+
+
+def test_average_is_mean_of_regional_totals():
+    # 475 total across 3 regions; averaging per row (4 rows) would give 118.75
+    _, average = summarize(load_rows(DATA / "sales.csv"))
+    assert average == pytest.approx(475 / 3)
