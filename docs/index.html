@@ -170,6 +170,7 @@ git push</pre></li>
     <li><b>The fix ("code-first"):</b> Git is the single source of truth; each notebook or pipeline is saved as files; environments are created by code; each environment's settings are filled in automatically by a tool called <b>fabric-cicd</b>.</li>
     <li><b>The three building blocks:</b> <b>workspaces</b> (separate rooms for Dev, Test, Prod), <b>item definitions</b> (each item saved as files), and <b>Git integration</b> ("Update from Git" turns the files back into live items).</li>
     <li><b>Infrastructure as Code:</b> Terraform or Bicep creates the workspace, its capacity and a Key Vault for secrets, the same way for Dev, Test and Prod, instead of clicking in the portal three times. That's also why ordinary users often can't create workspaces themselves: they're meant to come from code.</li>
+    <li><b>Developer sandboxes:</b> instead of everyone editing one shared Dev workspace, each developer "branches out" to their own feature branch and their own temporary workspace, works there, opens a pull request, and after the merge the shared Dev workspace updates from Git. The temporary workspace is then deleted.</li>
   </ul>
 </div>
 
