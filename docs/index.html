@@ -172,6 +172,8 @@ git push</pre></li>
     <li><b>Infrastructure as Code:</b> Terraform or Bicep creates the workspace, its capacity and a Key Vault for secrets, the same way for Dev, Test and Prod, instead of clicking in the portal three times. That's also why ordinary users often can't create workspaces themselves: they're meant to come from code.</li>
     <li><b>Developer sandboxes:</b> instead of everyone editing one shared Dev workspace, each developer "branches out" to their own feature branch and their own temporary workspace, works there, opens a pull request, and after the merge the shared Dev workspace updates from Git. The temporary workspace is then deleted.</li>
     <li><b>The release flow:</b> merge a pull request → an automated pipeline starts → Dev updates from Git → the tool deploys to <b>Test</b> → it <b>stops and waits for a release manager's approval</b> → then deploys the same thing to <b>Production</b>, with production settings swapped in.</li>
+    <li><b>Cleanup and cost:</b> pause or shrink capacities when nothing is running; delete temporary environments and their credentials when done.</li>
+    <li><b>The closing message, three shifts:</b> workspaces created by code (Terraform), not by hand · settings kept outside the code and filled in per environment (Variable Libraries) · releases run by an automated tool under a service account (fabric-cicd), not by people clicking. "Source of truth: Git. Execution: automated."</li>
   </ul>
 </div>
 
